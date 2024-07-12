@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website to Android App Converter</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+        padding: 20px;
+      }
+      header {
+        background: #50b3a2;
+        color: white;
+        padding-top: 30px;
+        min-height: 70px;
+        border-bottom: #e8491d 3px solid;
+      }
+      header h1 {
+        margin: 0;
+        text-align: center;
+      }
+      .main-content {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      .form-container {
+        flex: 1;
+        background: #fff;
+        padding: 20px;
+        margin-right: 20px;
+      }
+      .preview-container {
+        flex: 1;
+        background: #fff;
+        padding: 20px;
+      }
+      input[type="text"],
+      input[type="file"],
+      input[type="color"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: #50b3a2;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #3a8279;
+      }
+      #mockup {
+        width: 100%;
+        position: relative;
+        max-width: 300px;
+        height: 600px;
+        border: 10px solid #000;
+        border-radius: 20px;
+        margin: 20px auto;
+        display: flex;
+        flex-direction: column;
+      }
+      #mockup-content {
+        flex-grow: 1;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Website to Android App Converter</h1>
+      </div>
+    </header>
+
+    <div class="container main-content">
+      <div class="form-container">
+        <h2>Enter Your Website Details</h2>
+        <form id="app-form">
+          <label for="website-url">Website URL:</label>
+          <input type="text" id="website-url" required />
+
+          <label for="app-name">App Name:</label>
+          <input type="text" id="app-name" required />
+
+          <label for="app-logo">App Logo (PNG or JPG):</label>
+          <input type="file" id="app-logo" accept=".png, .jpg" />
+
+          <label for="splash-screen">Splash Screen (PNG or JPG):</label>
+          <input type="file" id="splash-screen" accept=".png, .jpg" />
+
+          <label for="primary-color">Primary Color:</label>
+          <input type="color" id="primary-color" value="#50b3a2" />
+
+          <label for="secondary-color">Secondary Color:</label>
+          <input type="color" id="secondary-color" value="#e8491d" />
+
+          <button id="generate-btn" type="submit">Generate App Preview</button>
+        </form>
+      </div>
+
+      <div class="preview-container">
+        <h2>App Preview</h2>
+        <div id="mockup">
+          <iframe id="mockup-content" src="about:blank"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("app-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const generateBtn = document.getElementById("generate-btn");
+          // Change button state to loading
+          generateBtn.innerText = "Loading...";
+          generateBtn.disabled = true;
+
+          const websiteUrl = document.getElementById("website-url").value;
+          const appName = document.getElementById("app-name").value;
+          const primaryColor = document.getElementById("primary-color").value;
+          const secondaryColor =
+            document.getElementById("secondary-color").value;
+          const appLogo = document.getElementById("app-logo").files[0];
+          const splashScreen =
+            document.getElementById("splash-screen").files[0];
+
+          // Update mockup
+          const mockupContainer = document.getElementById("mockup");
+          const splashScreenElement = document.createElement("div");
+          splashScreenElement.id = "splash-screen";
+          splashScreenElement.style.width = "100%";
+          splashScreenElement.style.height = "100%";
+          splashScreenElement.style.position = "absolute";
+          splashScreenElement.style.top = "0";
+          splashScreenElement.style.left = "0";
+          splashScreenElement.style.backgroundColor = "white";
+          splashScreenElement.style.display = "flex";
+          splashScreenElement.style.justifyContent = "center";
+          splashScreenElement.style.alignItems = "center";
+          const splashImage = document.createElement("img");
+          splashImage.src = URL.createObjectURL(splashScreen);
+          splashImage.style.maxWidth = "100%";
+          splashImage.style.maxHeight = "100%";
+          splashScreenElement.appendChild(splashImage);
+          mockupContainer.appendChild(splashScreenElement);
+          setTimeout(() => {
+            splashScreenElement.remove();
+            mockupContainer.querySelector("#mockup-content").src = websiteUrl;
+          }, 3000);
+
+          // Send data to server to build APK
+          const formData = new FormData();
+          formData.append("websiteUrl", websiteUrl);
+          formData.append("appName", appName);
+          formData.append("primaryColor", primaryColor);
+          formData.append("secondaryColor", secondaryColor);
+          formData.append("appLogo", appLogo);
+          formData.append("splashScreen", splashScreen);
+
+          // Send data to server to build APK
+          fetch("/build-apk", {
+            method: "POST",
+            // headers: {
+            //   "Content-Type": "multipart/form-data",
+            // },
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                alert("APK built successfully! Downloading...");
+                generateBtn.innerText = 'Generate App Preview';
+                generateBtn.disabled = false;
+                window.location.href = `/download-apk/${data.apkPath
+                  .split("/")
+                  .pop()}`;
+              } else {
+                alert("Failed to build APK");
+                generateBtn.innerText = 'Generate App Preview';
+              generateBtn.disabled = false;
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              generateBtn.innerText = 'Generate App Preview';
+              generateBtn.disabled = false;
+              alert("An error occurred while building the APK");
+            });
+        });
+    </script>
+  </body>
+</html>
