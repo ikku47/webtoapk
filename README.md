@@ -1,18 +1,92 @@
-# webtoapk
+# Project Documentation
 
-To install dependencies:
+## Overview
 
+This project is designed to automate the process of generating Android APK files from web applications. It provides a web interface where users can submit their web app details, including the website URL, app name, primary and secondary colors, app logo, and splash screen. The backend, written in JavaScript, handles these inputs to dynamically generate a custom APK file.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm installed
+- Bun installed
+- Android SDK and Java Development Kit (JDK) for APK generation
+- Properly set JAVA_HOME and ANDROID_HOME environment variables
+
+### Installation
+
+1. Clone the repository to your local machine.
+   ```bash
+   git clone <repository-url>
+   ```
+2. Navigate to the project directory.
+   ```bash
+   cd <project-directory>
+   ```
+3. Install the necessary npm packages.
+   ```bash
+   bun install
+   ```
+
+## Usage
+
+The project consists of a web interface for input submission and a backend service for processing these inputs and generating the APK. The main file, `index.js`, sets up the server and endpoints.
+
+### Running the Server
+
+To start the server, run:
 ```bash
-bun install
+bun index.js
 ```
+This will start the server on the default port defined in your environment or on port 3000 if not specified.
 
-To run:
+### Submitting a Request
 
-```bash
-bun run index.js
-```
+To submit a request for APK generation, navigate to the provided web interface and fill in the required fields:
+- Website URL
+- App Name
+- Primary Color
+- Secondary Color
+- App Logo (file upload)
+- Splash Screen (file upload)
 
-This project was created using `bun init` in bun v1.0.9. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Upon submission, the backend processes these inputs to generate an APK file.
+
+### API Endpoint
+
+The main API endpoint for submitting APK build requests is `/submit-app`, which accepts POST requests with the required data.
+
+## Key Components
+
+### APK Generation Logic
+
+The core functionality for generating APKs is encapsulated in the [`buildAPK`](command:_github.copilot.openSymbolFromReferences?%5B%7B%22%24mid%22%3A1%2C%22path%22%3A%22%2FUsers%2Fikku%2Frnd%2Fwebtoapk%2FbuildAPK.js%22%2C%22scheme%22%3A%22file%22%7D%2C%7B%22line%22%3A4%2C%22character%22%3A0%7D%5D "buildAPK.js") function, which takes website details and media files as input and produces an APK file. This process involves several steps, including setting up the Android project, customizing it based on the inputs, and compiling it into an APK.
+
+### File Handling
+
+The project uses `multer` for handling file uploads. The uploaded app logo and splash screen are temporarily stored in the server and later cleaned up after the APK generation process completes.
+
+### Error Handling
+
+The server provides basic error handling for missing parameters and failures during the APK generation process. It responds with appropriate HTTP status codes and error messages.
+
+## Troubleshooting
+
+- Ensure all prerequisites are installed and properly configured.
+- Check environment variables for correct paths to JAVA_HOME and ANDROID_HOME.
+- For issues related to file uploads, verify the server has write permissions to the designated directories.
+
+## Contributing
+
+Contributions to the project are welcome. Please follow the standard fork-and-pull request workflow. Ensure your code adheres to the project's coding standards and includes appropriate tests.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact
+
+For support or to report issues, please file an issue on the project's GitHub repository.
 
 
 # Documentation for [`buildAPK.js`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2FUsers%2Fikku%2Frnd%2Fwebtoapk%2FbuildAPK.js%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%5D "/Users/ikku/rnd/webtoapk/buildAPK.js")
@@ -24,6 +98,7 @@ The [`buildAPK.js`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%
 ## Requirements
 
 - **Node.js**: Ensure you have Node.js installed on your system to run the script. You can download it from [Node.js official website](https://nodejs.org/).
+- **Bun.sh**: Ensure you have bun installed on your system to run the script. You can download it from [Bun.sh official website](https://bun.sh/).
 - **Java Development Kit (JDK)**: The JDK is necessary for Android development. Make sure it's installed and properly set up in your environment variables.
 - **Android SDK**: The script requires access to the Android SDK. Ensure it's installed and configured correctly.
 - **Environment Variables**: Set up the necessary environment variables for JAVA_HOME and ANDROID_HOME.
@@ -38,9 +113,9 @@ The [`buildAPK.js`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%
    ```bash
    cd <project-directory>
    ```
-3. **Install Dependencies**: Use npm to install the project's dependencies.
+3. **Install Dependencies**: Use bun to install the project's dependencies.
    ```bash
-   npm install
+   bun install
    ```
 
 ## Usage
@@ -48,9 +123,9 @@ The [`buildAPK.js`](command:_github.copilot.openRelativePath?%5B%7B%22scheme%22%
 To build an APK using the `buildAPK.js` script, follow these steps:
 
 1. **Open Terminal**: Ensure you're in the project's root directory.
-2. **Run the Script**: Execute the script using Node.js.
+2. **Run the Script**: Execute the script using bun.
    ```bash
-   node buildAPK.js
+   bun buildAPK.js
    ```
 3. **Follow On-Screen Instructions**: The script may provide prompts or instructions. Follow them to proceed with the APK building process.
 
