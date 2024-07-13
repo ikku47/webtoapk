@@ -59,8 +59,11 @@ app.get("/download-apk/:filename", (req, res) => {
 
   if (fs.existsSync(filePath)) {
     res.download(filePath);
-    // fs.remove(path.join(__dirname, 'projects', filename.replace('.apk', '')));
+    fs.remove(path.join(__dirname, 'projects', filename.replace('.apk', '')));
   } else {
+    if (fs.existsSync(filePath)){
+      fs.remove(path.join(__dirname, 'projects', filename.replace('.apk', '')));
+    }
     res.status(404).json({ error: "APK file not found" });
   }
 });
