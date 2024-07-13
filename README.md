@@ -4,6 +4,8 @@
 
 This project is designed to automate the process of generating Android APK files from web applications. It provides a web interface where users can submit their web app details, including the website URL, app name, primary and secondary colors, app logo, and splash screen. The backend, written in JavaScript, handles these inputs to dynamically generate a custom APK file.
 
+![alt text](screenshot.png)
+
 ## Getting Started
 
 ### Prerequisites
